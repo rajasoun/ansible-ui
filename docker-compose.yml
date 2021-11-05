@@ -29,7 +29,7 @@ services:
       - ansible-ui
 
   caddy:
-    image: caddy:2.3.0
+    image: caddy:latest
     container_name: caddy
     ports:
       - "0.0.0.0:80:80"
@@ -43,23 +43,13 @@ services:
     networks:
       - ansible-ui
 
-  whoami:
-    image: containous/whoami:latest
-    container_name: whoami
-    networks:
-      - ansible-ui
-
   start_dependencies:
     image: dadarek/wait-for-dependencies
     container_name: start_dependencies
-    command: db:3306 semaphore:3000 caddy:443
+    command: db:3306 semaphore:3000 
     depends_on:
       - db
       - semaphore
-      - caddy
-    command: caddy:443
-    depends_on:
-      - caddy
     environment:
       SLEEP_LENGTH: 1
       TIMEOUT_LENGTH: 60

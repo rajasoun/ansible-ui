@@ -26,8 +26,9 @@ case $choice in
   up)
     echo "Spinning up Docker Images..."
     echo "If this is your first time starting sandbox this might take a minute..."
-    #eval docker-compose  "-f ${COMPOSE_FILES}" up 
+    echo "docker-compose  "-f ${COMPOSE_FILES}"  run --rm start_dependencies"
     eval docker-compose  "-f ${COMPOSE_FILES}"  run --rm start_dependencies
+    eval docker-compose  "-f ${COMPOSE_FILES}"  up -d
     ;;
   down)
     echo "Stopping sandbox containers..."
@@ -43,7 +44,7 @@ case $choice in
     eval docker-compose  "-f ${COMPOSE_FILES}" logs -f exec semaphore sh
     ;;
   logs)
-    eval docker-compose  "-f ${COMPOSE_FILES}" logs -f 
+    eval docker-compose  "-f ${COMPOSE_FILES}" logs -f caddy
     ;;
     *)
     cat <<-EOF

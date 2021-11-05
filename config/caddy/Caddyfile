@@ -1,15 +1,12 @@
-{$CADDY_WEB_HOST}:443 {
-    reverse_proxy whoami
-    tls /etc/certs/ssl/ssl_certificate.crt /etc/certs/ssl/ssl_certificate_key.key
-}
-
 {$CADDY_WEB_HOST}:80 {
-    redir https://{$CADDY_WEB_HOST}{uri}
+  	redir https://{host}{uri} 301
 }
 
-{$CADDY_WEB_HOST}:443/ui {
+{$CADDY_WEB_HOST}:443 {
     reverse_proxy semaphore:3000
+    tls /etc/certs/ssl/ssl_certificate.crt /etc/certs/ssl/ssl_certificate_key.key
+
+    route /ping {
+        respond "pong" 200
+    }
 }
-
-
-
