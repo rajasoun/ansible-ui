@@ -1,0 +1,12 @@
+# listen on 80/443, and redirect all 80 to 443 via 301
+entryPoints:
+  http:
+    address: :80
+    http:
+      redirections:
+        entryPoint:
+          to: https
+          scheme: https
+          permanent: true
+  https:
+    address: :443

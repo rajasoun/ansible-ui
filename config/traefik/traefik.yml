@@ -1,0 +1,30 @@
+log:
+  level: WARN #INFO
+
+entryPoints:
+  http:
+    address: ':80'
+  https:
+    address: ':443'
+
+api:
+  dashboard: true
+  
+metrics:
+  prometheus:  
+     addEntryPointsLabels: true
+     addRoutersLabels: true
+     addServicesLabels: true
+     manualRouting: true
+
+providers:
+  file:
+    directory: /etc/traefik/dynamic
+    watch: true
+  docker:
+    endpoint: 'unix:///var/run/docker.sock'
+    watch: true
+    exposedbydefault: false
+
+
+
