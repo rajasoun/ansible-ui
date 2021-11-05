@@ -1,5 +1,0 @@
-# SSL Certificates
-tls:
-  certificates:
-    - certFile: ./certs/ssl_certificate.crt
-      keyFile:  ./certs/ssl_certificate_key.key

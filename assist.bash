@@ -5,7 +5,9 @@ IFS=$'\n\t'
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 COMPOSE_FILES="docker-compose.yml"
+CADDY_WEB_HOST="htd-bizapps-monitor.cisco.com"
 
+export BASE_DIR COMPOSE_FILES CADDY_WEB_HOST
 
 function display_url_status(){
     HOST="$1"
@@ -24,7 +26,7 @@ case $choice in
   up)
     echo "Spinning up Docker Images..."
     echo "If this is your first time starting sandbox this might take a minute..."
-    #eval docker-compose  "-f ${COMPOSE_FILES}" up -d --build
+    #eval docker-compose  "-f ${COMPOSE_FILES}" up 
     eval docker-compose  "-f ${COMPOSE_FILES}"  run --rm start_dependencies
     ;;
   down)
@@ -34,7 +36,7 @@ case $choice in
     ;;
   status)
     echo "Querying sandbox containers status..."
-    display_url_status "http://localhost:3000"
+    display_url_status "https://$CADDY_WEB_HOST"
     eval docker-compose "-f ${COMPOSE_FILES}"  ps
     ;;
   enter)

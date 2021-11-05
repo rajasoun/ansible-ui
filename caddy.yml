@@ -1,0 +1,25 @@
+version: '3.9'
+services:
+  caddy:
+    image: caddy:latest
+    container_name: caddy
+    ports:
+      - "0.0.0.0:80:80"
+      - "0.0.0.0:443:443"
+    volumes:
+      - $BASE_DIR/config/caddy:/etc/caddy:ro
+      - $BASE_DIR/certs:/etc/certs/ssl:ro
+    environment:
+      CADDY_WEB_HOST: $CADDY_WEB_HOST
+    networks:
+      - ansible-ui
+
+  whoami:
+    image: containous/whoami:latest
+    container_name: whoami
+    networks:
+      - ansible-ui
+
+networks:
+  ansible-ui:
+    driver: bridge

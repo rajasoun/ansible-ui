@@ -28,41 +28,39 @@ services:
     networks:
       - ansible-ui
 
-  reverse-proxy:
+  caddy:
     image: caddy:2.3.0
-    container_name: reverse-proxy
+    container_name: caddy
     ports:
-      - "3000:3000"
-      - "8080:8080"
+      - "0.0.0.0:80:80"
+      - "0.0.0.0:443:443"
     volumes:
-      - ./config/caddy:/etc/caddy
+      - $BASE_DIR/config/caddy:/etc/caddy:ro
+      - $BASE_DIR/certs:/etc/certs/ssl:ro
     restart: unless-stopped
+    networks:
+      - ansible-ui
+
+  whoami:
+    image: containous/whoami:latest
+    container_name: whoami
     networks:
       - ansible-ui
 
   start_dependencies:
     image: dadarek/wait-for-dependencies
-    command: db:3306 semaphore:3000 reverse-proxy:3000
+    container_name: start_dependencies
+    # command: db:3306 semaphore:3000 caddy:443
+    # depends_on:
+    #   - db
+    #   - semaphore
+    #   - caddy
+    command: caddy:443
     depends_on:
-      - db
-      - semaphore
-      - reverse-proxy
+      - caddy
     environment:
       SLEEP_LENGTH: 1
       TIMEOUT_LENGTH: 60
-    networks:
-      - ansible-ui
-
-  traefik:
-    image: traefik:latest
-    container_name: traefik
-    ports:
-      - "0.0.0.0:80:80"
-      - "0.0.0.0:443:443"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - $BASE_DIR/config/traefik:/etc/traefik
-      - $BASE_DIR/certs:/certs:ro
     networks:
       - ansible-ui
 
