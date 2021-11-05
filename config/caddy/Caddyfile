@@ -3,10 +3,34 @@
 }
 
 {$CADDY_WEB_HOST}:443 {
+    encode zstd gzip
+    metrics /metrics
+    header {
+		# Hide "Server: Caddy"
+		-Server	
+		# prevent attacks such as Cross Site Scripting (XSS)
+		Content-Security-Policy default-src 'self' *.cloud.skynewz.dev
+		# enable the cross-site scripting (XSS) filter built into modern web browsers
+		X-XSS-Protection 1; mode=block
+		# ensures the connection cannot be establish through an insecure HTTP connection 
+		Strict-Transport-Security max-age=31536000; includeSubDomains; preload
+		# clickjacking protection
+		X-Frame-Options DENY
+		# provides clickjacking protection. Disable iframes
+		X-Frame-Options: SAMEORIGIN
+		# disable clients from sniffing the media type
+		X-Content-Type-Options nosniff
+		# keep referrer data off of HTTP connections
+		Referrer-Policy no-referrer-when-downgrade
+	}
     reverse_proxy semaphore:3000
     tls /etc/certs/ssl/ssl_certificate.crt /etc/certs/ssl/ssl_certificate_key.key
 
     route /ping {
         respond "pong" 200
+    }
+
+    handle /version {
+        respond "1.0" 200
     }
 }
